@@ -593,6 +593,7 @@ def create_enhanced_investment_report(equity_df):
         equity_df_short = equity_df[['Stock Name', '1Y Return (%)', 'Weightage', 'Score','Revised Score']].copy()
         equity_df_short['Score'] = equity_df_short['Score'].round(2)
         equity_df_short['Revised Score'] = equity_df_short['Revised Score'].round(2)
+        equity_df_short = equity_df_short.sort_values(by='Revised Score', ascending=False)
         header = ['Stock Name', '1Y Return (%)', 'Weightage', 'Score', 'Revised Score']
         data_rows = equity_df_short.astype(str).values.tolist()
         table_data = [header] + data_rows
@@ -942,3 +943,4 @@ if uploaded_file is not None:
             else:
 
                 st.error("Failed to generate PDF report. Check logs for details.") 
+
