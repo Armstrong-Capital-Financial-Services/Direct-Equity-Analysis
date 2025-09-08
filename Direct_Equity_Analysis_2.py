@@ -616,6 +616,27 @@ def create_enhanced_investment_report(equity_df):
         elements.append(Spacer(1, 24))
 
         # Add a note about the scoring system
+        scoring_note = """
+        <b>Note on Scoring Framework</b><br/><br/>
+         The stock scores presented in this report are derived from a structured multi-factor framework that evaluates companies across four key dimensions: <b>Risk, Returns, Valuation, and Profitability & Growth</b>. 
+         The objective is to provide a balanced measure of financial strength and consistency.<br/><br/>
+
+        <b>Scoring Criteria</b><br/>
+         - <b>Risk</b>: Beta ≤ 1, Standard Deviation ≤ 20%, Debt-to-Capital ≤ 40%<br/>
+         - <b>Returns</b>: ROE ≥ 12%, ROA ≥ 6%, ROCE > 12%<br/>
+         - <b>Valuation</b>: PEG ≤ Sector PEG, PE ≤ Sector PE<br/>
+         - <b>Profitability & Growth</b>: Net Profit CAGR ≥ 12% (3 years), Net Profit Margin ≥ 10%<br/><br/>
+
+        <b>Interpretation</b><br/>
+         - A <b>higher score</b> indicates stronger fundamentals, with the company demonstrating consistent performance across multiple dimensions.<br/>
+         - A <b>lower score</b> highlights areas of relative weakness.<br/>"""
+
+        note_paragraph = Paragraph(scoring_note, normal_style)
+
+        note_table = Table([[note_paragraph]], colWidths=[450])  # adjust width as per your page
+
+        note_table.setStyle(TableStyle([('BACKGROUND', (0, 0), (-1, -1), colors.whitesmoke),   ('BOX', (0, 0), (-1, -1), 1, colors.grey), ('INNERPADDING', (0, 0), (-1, -1), 8),   ]))
+        elements.append(note_table)
 
         # Build PDF with page border
         doc.build( elements,
@@ -943,5 +964,6 @@ if uploaded_file is not None:
             else:
 
                 st.error("Failed to generate PDF report. Check logs for details.") 
+
 
 
