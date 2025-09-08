@@ -547,7 +547,8 @@ def create_enhanced_investment_report(equity_df):
             low_weight_thresh = portfolio_df['Weightage'].astype(float).median()
 
             high_return_low_weight = portfolio_df[(portfolio_df['1Y Return (%)'].astype(float) > high_return_thresh) &
-            (portfolio_df['Weightage'].astype(float) < low_weight_thresh)][['Stock Name', '1Y Return (%)', 'Weightage']]
+            (portfolio_df['Weightage'].astype(float) < low_weight_thresh) & (portfolio_df['1Y Return (%)'].astype(float) >= 1)   # filter out returns < 1%
+            ][['Stock Name', '1Y Return (%)', 'Weightage']]
 
             low_return_high_weight = portfolio_df[(portfolio_df['1Y Return (%)'].astype(float) < low_return_thresh) &
             (portfolio_df['Weightage'].astype(float) > high_weight_thresh)][['Stock Name', '1Y Return (%)', 'Weightage']]
@@ -964,6 +965,7 @@ if uploaded_file is not None:
             else:
 
                 st.error("Failed to generate PDF report. Check logs for details.") 
+
 
 
 
