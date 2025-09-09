@@ -17,34 +17,7 @@ import numpy as np
 import tempfile
 import os
 import shutil # Import shutil for cleaning up temporary directory
-def calculate_portfolio_std(portfolio_df, period="1y"):
-    # Fetch daily returns for all stocks in the portfolio
-    daily_returns = []
-    for stock in portfolio_df['Stock Code']:
-        ticker = yf.Ticker(stock)
-        try:
-            data = ticker.history(period=period)['Close'].pct_change().dropna()
-            daily_returns.append(data)
-        except Exception as e:
-            print(f"Error fetching data for {stock}: {e}")
-            daily_returns.append(pd.Series())  # Append empty series for missing data
-    
-    # Combine returns into a DataFrame, aligning by date
-    daily_returns_df = pd.concat(daily_returns, axis=1).dropna()
-    daily_returns_df.columns = portfolio_df['Stock Code']
-    
-    # Calculate covariance matrix (annualized)
-    cov_matrix = daily_returns_df.cov() * 252
-    
-    # Portfolio weights (as fractions)
-    weights = portfolio_df['Weightage'].astype(float) / 100
-    
-    # Portfolio variance
-    portfolio_var = np.sqrt(np.dot(weights.T, np.dot(cov_matrix, weights)))
-    
-    # Portfolio standard deviation (in percentage)
-    portfolio_std = portfolio_var * 100
-    return round(portfolio_std, 2)
+
 # --- Your existing functions (unmodified) ---
 
 def find_isin_column(df):
@@ -142,8 +115,7 @@ def create_portfolio_charts(equity_df, temp_dir , portfolio_df,nifty100_data,nif
     # 2. Performance vs Risk Scatter Plot
     plt.figure(figsize=(5, 3))
     Portfolio_1y_Return = (portfolio_df['1Y Return (%)'].astype(float) * portfolio_df['Weightage'].astype(float) / 100).sum().round(2)
-    #Portfolio_SD = (portfolio_df['Annualized Standard Deviation (%)'].astype(float) * portfolio_df['Weightage'].astype(float) / 100).sum().round(2)
-    Portfolio_SD = calculate_portfolio_std(portfolio_df)
+    Portfolio_SD = (portfolio_df['Annualized Standard Deviation (%)'].astype(float) * portfolio_df['Weightage'].astype(float) / 100).sum().round(2)
     Index_Equiweighted_Return = (
     portfolio_df[['Nifty100_1y_Return (%)',
                   'Nifty Midcap150_1y_Return (%)',
@@ -760,7 +732,7 @@ if uploaded_file is not None:
     one_year_returns = []
     two_years_annualized_returns = []
     three_year_annualized_returns = []
-    #std_devs = []
+    std_devs = []
     # Add a progress bar for fetching stock data
     progress_text = "Fetching stock data. Please wait..."
     my_bar = st.progress(0, text=progress_text)
@@ -808,10 +780,10 @@ if uploaded_file is not None:
             ret_2y_ann = ((price_today / price_2y) ** (1 / 2) - 1) if price_2y else None
 
             # ** NEW: Calculate daily returns for the last year for standard deviation **
-            #daily_returns = stock_data['Close'].pct_change().dropna()
+            daily_returns = stock_data['Close'].pct_change().dropna()
             
             # ** NEW: Calculate annualized standard deviation (volatility) **
-            #annualized_std_dev = daily_returns.std() * np.sqrt(252) * 100
+            annualized_std_dev = daily_returns.std() * np.sqrt(252) * 100
             
             three_months_returns.append(round(ret_3m * 100, 2) if ret_3m is not None else 0)
             six_month_returns.append(round(ret_6m * 100, 2) if ret_6m is not None else 0)
@@ -819,7 +791,7 @@ if uploaded_file is not None:
             three_year_annualized_returns.append(round(ret_3y_ann * 100, 2) if ret_3y_ann is not None else 0)
             two_years_annualized_returns.append(round(ret_2y_ann * 100, 2) if ret_2y_ann is not None else 0)
   
-            #std_devs.append(round(annualized_std_dev, 2))
+            std_devs.append(round(annualized_std_dev, 2))
 
         except Exception as e:
             st.warning(f"Could not fetch data for {stocks}: {e}. Skipping returns and standard deviation calculation.")
@@ -828,7 +800,7 @@ if uploaded_file is not None:
             one_year_returns.append(0)
             two_years_annualized_returns.append(0)
             three_year_annualized_returns.append(0)
-            #std_devs.append(0)
+            std_devs.append(0)
         
         my_bar.progress((i + 1) / len(portfolio_df), text=progress_text)
     
@@ -852,7 +824,6 @@ if uploaded_file is not None:
     smallcap_df['date'] = pd.to_datetime(smallcap_df['date'], format='%d-%m-%Y')
     smallcap_df=smallcap_df.sort_values(by='date', ascending=True)
     smallcap_df['nav'] = smallcap_df['nav'].astype(float)
-    st.dataframe(smallcap_df)
     nifty100_1y_return = ((nifty100_data['Close'].iloc[-1] / nifty100_data['Close'].iloc[-252] - 1) * 100).round(2)
     niftymidcap_1y_return = ((niftymidcap_data['Close'].iloc[-1] / niftymidcap_data['Close'].iloc[-252] - 1) * 100).round(2)
     nifty100_6m_return = ((nifty100_data['Close'].iloc[-1] / nifty100_data['Close'].iloc[-126] - 1) * 100).round(2)
@@ -893,8 +864,8 @@ if uploaded_file is not None:
     portfolio_df['Nifty_Smallcap_3y_Return(%)'] = niftysmallcap_3y_annualized_return.astype(str)
     
     #portfolio_df['Weight'] = ((portfolio_df['Quantity']  / portfolio_df['Quantity'].sum()).round(2) * 100).astype(str)
-    #portfolio_df['Portfolio_SD'] = (portfolio_df['Annualized Standard Deviation (%)'] * portfolio_df['Weightage'].astype(float) / 100).sum().round(2)
-    #portfolio_df['Portfolio_SD'] = portfolio_df['Portfolio_SD'].astype(str)
+    portfolio_df['Portfolio_SD'] = (portfolio_df['Annualized Standard Deviation (%)'] * portfolio_df['Weightage'].astype(float) / 100).sum().round(2)
+    portfolio_df['Portfolio_SD'] = portfolio_df['Portfolio_SD'].astype(str)
 
    
     # Define the scoring function
@@ -992,6 +963,7 @@ if uploaded_file is not None:
             else:
 
                 st.error("Failed to generate PDF report. Check logs for details.") 
+
 
 
 
