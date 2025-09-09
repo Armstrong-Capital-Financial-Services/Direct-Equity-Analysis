@@ -837,7 +837,7 @@ if uploaded_file is not None:
     portfolio_df['1Y Return (%)'] = one_year_returns
     portfolio_df['2Y Annualized Return (%)'] = two_years_annualized_returns
     portfolio_df['3Y Annualized Return (%)'] = three_year_annualized_returns
-    #portfolio_df['Annualized Standard Deviation (%)'] = calculate_portfolio_std(portfolio_df)
+    portfolio_df['Annualized Standard Deviation (%)'] = calculate_portfolio_std(portfolio_df)
     portfolio_df['Last Price'] = portfolio_df['Stock Code'].apply(lambda code: yf.Ticker(code).history(period="3y")['Close'].iloc[-1])
     portfolio_df['Weight_2'] = portfolio_df['Quantity'] * portfolio_df['Last Price']
     portfolio_df['Weightage'] = ((portfolio_df['Weight_2'] / portfolio_df['Weight_2'].sum()) * 100).round(2).astype(str)
@@ -898,8 +898,7 @@ if uploaded_file is not None:
 
    
     # Define the scoring function
-    def compute_score(row,portfolio_df):
-        portfolio_df['Annualized Standard Deviation (%)'] = calculate_portfolio_std(portfolio_df)
+    def compute_score(row):
         score = 0
         weight_score = 0
         # 1. Balanced Risk
@@ -972,7 +971,7 @@ if uploaded_file is not None:
         return score,weight_score
 
     # Apply the function to the dataframe
-    portfolio_df[['Score', 'Weight_Score']] = portfolio_df.apply(lambda row: pd.Series(compute_score(row,portfolio_df=portfolio_df)), axis=1)
+    portfolio_df[['Score', 'Weight_Score']] = portfolio_df.apply(lambda row: pd.Series(compute_score(row)), axis=1)
     portfolio_df['Revised Score'] = portfolio_df['Score'] * portfolio_df['Weight_Score'].astype(float).round(2)
 
     st.subheader("Analyzed Portfolio Data:")
@@ -993,6 +992,7 @@ if uploaded_file is not None:
             else:
 
                 st.error("Failed to generate PDF report. Check logs for details.") 
+
 
 
 
