@@ -837,7 +837,7 @@ if uploaded_file is not None:
     portfolio_df['1Y Return (%)'] = one_year_returns
     portfolio_df['2Y Annualized Return (%)'] = two_years_annualized_returns
     portfolio_df['3Y Annualized Return (%)'] = three_year_annualized_returns
-    portfolio_df['Annualized Standard Deviation (%)'] = calculate_portfolio_std(portfolio_df)
+    #portfolio_df['Annualized Standard Deviation (%)'] = calculate_portfolio_std(portfolio_df)
     portfolio_df['Last Price'] = portfolio_df['Stock Code'].apply(lambda code: yf.Ticker(code).history(period="3y")['Close'].iloc[-1])
     portfolio_df['Weight_2'] = portfolio_df['Quantity'] * portfolio_df['Last Price']
     portfolio_df['Weightage'] = ((portfolio_df['Weight_2'] / portfolio_df['Weight_2'].sum()) * 100).round(2).astype(str)
@@ -992,6 +992,7 @@ if uploaded_file is not None:
             else:
 
                 st.error("Failed to generate PDF report. Check logs for details.") 
+
 
 
 
