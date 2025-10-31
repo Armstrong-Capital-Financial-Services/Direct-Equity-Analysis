@@ -722,8 +722,6 @@ if uploaded_file is not None:
 
     portfolio_df = portfolio_df.fillna(0)
     portfolio_df['Stock Code'] = portfolio_df['Stock Code'].astype(str) + '.NS'
-    portfolio_df.loc[portfolio_df.index[-2:], 'Stock Code'] = (
-    portfolio_df.loc[portfolio_df.index[-2:], 'Stock Code'].str.replace('.NS', '.BO', regex=False))
     df_quantity = df[[isin_col, 'Quantity']].copy()
     df_quantity.rename(columns={isin_col: 'ISIN'}, inplace=True)
     portfolio_df = pd.merge(portfolio_df, df_quantity, on='ISIN', how='left')
@@ -963,6 +961,7 @@ if uploaded_file is not None:
             else:
 
                 st.error("Failed to generate PDF report. Check logs for details.") 
+
 
 
 
