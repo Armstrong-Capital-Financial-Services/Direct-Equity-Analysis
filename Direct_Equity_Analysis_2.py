@@ -338,15 +338,16 @@ def create_enhanced_investment_report(equity_df):
         
         # Analyze portfolio data
         portfolio_analysis = analyze_portfolio_data(equity_df)
+
+        total_portfolio_value = equity_df['Weight_2'].sum()
         
         # Key Portfolio Metrics Summary
         elements.append(Paragraph("Executive Summary", subtitle_style))
         
-        metrics = [ ("Total Stocks", str(portfolio_analysis['total_stocks']), "Diversification base"),
+        metrics = [("Total Portfolio Value", format_currency(total_portfolio_value), "Current market value"),
+            ("Total Stocks", str(portfolio_analysis['total_stocks']), "Diversification base"),
      ("Sectors Covered", str(portfolio_analysis['sectors']), "Sector diversification"),
-     ("Average 1Y Return", f"{portfolio_analysis['avg_1y_return']:.2f}%", "Portfolio performance"),
      ("Average PE Ratio", f"{portfolio_analysis['avg_pe']:.2f}", "Valuation level"),
-     #("Average ROE", f"{portfolio_analysis['avg_roe']:.2f}%", "Profitability measure"),
      ("Average Beta", f"{portfolio_analysis['avg_beta']:.2f}", "Market risk exposure"),
      ("High ROE Stocks (>20%)", str(portfolio_analysis['high_roe_stocks']), "Quality companies")]
         
@@ -961,6 +962,7 @@ if uploaded_file is not None:
             else:
 
                 st.error("Failed to generate PDF report. Check logs for details.") 
+
 
 
 
