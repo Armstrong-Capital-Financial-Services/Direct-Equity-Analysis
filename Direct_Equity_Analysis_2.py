@@ -148,8 +148,8 @@ def create_portfolio_charts(equity_df, temp_dir , portfolio_df,nifty100_data,nif
     # 3. Market Cap Distribution
     plt.figure(figsize=(5, 3))
 
-    market_cap_counts = equity_df['MarketCap'].value_counts()
-    total = market_cap_counts.sum()  # total number of stocks
+    market_cap_weights = equity_df.groupby('MarketCap')['Weight_2'].sum()
+    total_weight = market_cap_weights.sum()
 
     bars = plt.bar(
     market_cap_counts.index,
@@ -157,19 +157,21 @@ def create_portfolio_charts(equity_df, temp_dir , portfolio_df,nifty100_data,nif
     color=['#FF6B6B', '#4ECDC4', '#45B7D1'],
     width=0.4)
 
-    plt.ylabel('Number of Stocks')
+    plt.ylabel('Invested Amount')
     plt.xlabel('Market Cap Category')
 
-    for bar, count in zip(bars, market_cap_counts.values):
-        height = bar.get_height()
-        percentage = (count / total) * 100
-        plt.text(
-        bar.get_x() + bar.get_width() / 2.,
-        height + 0.1,
+    for bar, weight_sum in zip(bars, market_cap_weights.values):
+    height = bar.get_height()
+    percentage = (weight_sum / total_weight) * 100 
+    
+    plt.text(
+        bar.get_x() + bar.get_width() / 2.0, # Use 2.0 for float division
+        height + 0.005, # Adjust offset as needed based on your weight scale
         f'{percentage:.1f}%',  # percentage with 1 decimal place
         ha='center',
         va='bottom',
-        fontsize=8)
+        fontsize=9 # Increased fontsize slightly
+    )
 
     chart_paths['market_cap'] = os.path.join(temp_dir, "market_cap_distribution.png")
     plt.savefig(chart_paths['market_cap'], bbox_inches='tight', pad_inches=0.5, dpi=200)
@@ -963,6 +965,7 @@ if uploaded_file is not None:
             else:
 
                 st.error("Failed to generate PDF report. Check logs for details.") 
+
 
 
 
