@@ -169,7 +169,7 @@ def create_portfolio_charts(equity_df, temp_dir , portfolio_df,nifty100_data,nif
         f'{percentage:.1f}%',  # percentage with 1 decimal place
         ha='center',
         va='bottom',
-        fontsize=9 # Increased fontsize slightly)
+        fontsize=9 )
 
     chart_paths['market_cap'] = os.path.join(temp_dir, "market_cap_distribution.png")
     plt.savefig(chart_paths['market_cap'], bbox_inches='tight', pad_inches=0.5, dpi=200)
@@ -963,6 +963,7 @@ if uploaded_file is not None:
             else:
 
                 st.error("Failed to generate PDF report. Check logs for details.") 
+
 
 
 
