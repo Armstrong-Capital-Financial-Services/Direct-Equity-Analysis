@@ -161,8 +161,8 @@ def create_portfolio_charts(equity_df, temp_dir , portfolio_df,nifty100_data,nif
     plt.xlabel('Market Cap Category')
 
     for bar, weight_sum in zip(bars, market_cap_weights.values):
-    height = bar.get_height()
-    percentage = (weight_sum / total_weight) * 100 
+      height = bar.get_height()
+      percentage = (weight_sum / total_weight) * 100 
     
     plt.text(
         bar.get_x() + bar.get_width() / 2.0, # Use 2.0 for float division
@@ -965,6 +965,7 @@ if uploaded_file is not None:
             else:
 
                 st.error("Failed to generate PDF report. Check logs for details.") 
+
 
 
 
