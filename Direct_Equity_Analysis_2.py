@@ -152,8 +152,8 @@ def create_portfolio_charts(equity_df, temp_dir , portfolio_df,nifty100_data,nif
     total_weight = market_cap_weights.sum()
 
     bars = plt.bar(
-    market_cap_counts.index,
-    market_cap_counts.values,
+    market_cap_weights.index,
+    market_cap_weights.values,
     color=['#FF6B6B', '#4ECDC4', '#45B7D1'],
     width=0.4)
 
@@ -965,6 +965,7 @@ if uploaded_file is not None:
             else:
 
                 st.error("Failed to generate PDF report. Check logs for details.") 
+
 
 
 
