@@ -628,7 +628,7 @@ def create_enhanced_investment_report(equity_df):
         elements.append(Paragraph("Stock Performance Metrics", subtitle_style))
         performance_df = equity_df[['Stock Name', '3M Return (%)', '6M Return (%)', '1Y Return (%)', '2Y Annualized Return (%)']].copy()
         for col in ['3M Return (%)', '6M Return (%)', '1Y Return (%)', '2Y Annualized Return (%)']:
-            performance_df[col] = performance_df[col].round(2)
+            performance_df[col] = performance_df[col].astype(float).round(2)
         performance_df = performance_df.sort_values(by='1Y Return (%)', ascending=False)
         perf_header = ['Stock Name', '3M Return (%)', '6M Return (%)', '1Y Return (%)', '2Y Annualized Return (%)']
         perf_data_rows = performance_df.astype(str).values.tolist()
@@ -997,6 +997,7 @@ if uploaded_file is not None:
             else:
 
                 st.error("Failed to generate PDF report. Check logs for details.") 
+
 
 
 
