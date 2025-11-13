@@ -348,13 +348,13 @@ def create_enhanced_investment_report(equity_df):
         # Key Portfolio Metrics Summary
         elements.append(Paragraph("Executive Summary", subtitle_style))
         
-        metrics = [ ("Total Stocks", str(portfolio_analysis['total_stocks']), "Diversification base"),
-     ("Sectors Covered", str(portfolio_analysis['sectors']), "Sector diversification"),
-     ("Average 1Y Return", f"{portfolio_analysis['avg_1y_return']:.2f}%", "Portfolio performance"),
-     ("Average PE Ratio", f"{portfolio_analysis['avg_pe']:.2f}", "Valuation level"),
-     #("Average ROE", f"{portfolio_analysis['avg_roe']:.2f}%", "Profitability measure"),
-     ("Average Beta", f"{portfolio_analysis['avg_beta']:.2f}", "Market risk exposure"),
-     ("High ROE Stocks (>20%)", str(portfolio_analysis['high_roe_stocks']), "Quality companies")]
+        metrics = [ ("Total Portfolio Value", format_currency(total_portfolio_value), "Current market value"),
+                   ("Total Stocks", str(portfolio_analysis['total_stocks']), "Diversification base"),
+                    ("Sectors Covered", str(portfolio_analysis['sectors']), "Sector diversification"),
+                    ("Average PE Ratio", f"{portfolio_analysis['avg_pe']:.2f}", "Valuation level"),
+                   #("Average ROE", f"{portfolio_analysis['avg_roe']:.2f}%", "Profitability measure"),
+                    ("Average Beta", f"{portfolio_analysis['avg_beta']:.2f}", "Market risk exposure"),
+                    ("High ROE Stocks (>20%)", str(portfolio_analysis['high_roe_stocks']), "Quality companies")]
         
         metric_style = ParagraphStyle(name='Metric', fontSize=8, textColor=colors.grey, leading=10)
         value_style = ParagraphStyle(name='Value', fontSize=14, textColor=colors.darkgreen, leading=16)
@@ -595,27 +595,29 @@ def create_enhanced_investment_report(equity_df):
         
         # Sector-wise Analysis Table
         elements.append(Paragraph("Detailed Portfolio Analysis", subtitle_style))
-        equity_df_short = equity_df[['Stock Name', '1Y Return (%)', 'Weightage', 'Score','Revised Score']].copy()
+        equity_df_short = equity_df[['Stock Name', '1Y Return (%)', 'Weightage', 'Score', 'Revised Score', 'Weight_2']].copy()
         equity_df_short['Score'] = equity_df_short['Score'].round(2)
         equity_df_short['Revised Score'] = equity_df_short['Revised Score'].round(2)
-        header = ['Stock Name', '1Y Return (%)', 'Weightage', 'Score', 'Revised Score']
-        data_rows = equity_df_short.astype(str).values.tolist()
+        equity_df_short['Weight_2'] = equity_df_short['Weight_2'].round(2).apply(format_currency)  # Round first, then apply row-wise formatting
+        equity_df_short = equity_df_short.sort_values(by='Revised Score', ascending=False)
+        header = ['Stock Name', '1Y Return (%)', 'Weightage (%)', 'Score', 'Revised Score', 'Invested Amt']
+        data_rows = equity_df_short.astype(str).values.tolist()  # Formatting is already applied as strings
         table_data = [header] + data_rows
-        portfolio_table = Table(table_data, colWidths=[2.8 * inch, 1.2 * inch, 1 * inch, 1 * inch])
+        portfolio_table = Table(table_data, colWidths=[2.5 * inch, 1.0 * inch, 1.0 * inch, 0.8 * inch, 0.8 * inch, 1.2 * inch])
         portfolio_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#34495E')), # Dark blue header
-            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, 0), 10),
-            ('FONTSIZE', (0, 1), (-1, -1), 8),
-            ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
-            ('TOPPADDING', (0, 0), (-1, 0), 8),
-            ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#CCCCCC')),
-            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.HexColor('#ECF0F1'), colors.white]), # Light grey/white rows
-            ('LEFTPADDING', (0, 0), (-1, -1), 4),
-            ('RIGHTPADDING', (0, 0), (-1, -1), 4) ]))
+    ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#34495E')),  # Dark blue header
+    ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+    ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+    ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+    ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+    ('FONTSIZE', (0, 0), (-1, 0), 10),
+    ('FONTSIZE', (0, 1), (-1, -1), 8),
+    ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
+    ('TOPPADDING', (0, 0), (-1, 0), 8),
+    ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#CCCCCC')),
+    ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.HexColor('#ECF0F1'), colors.white]),  # Light grey/white rows
+    ('LEFTPADDING', (0, 0), (-1, -1), 4),
+    ('RIGHTPADDING', (0, 0), (-1, -1), 4)]))
         elements.append(portfolio_table)
         elements.append(Spacer(1, 24))
 
@@ -1002,6 +1004,7 @@ if uploaded_file is not None:
             else:
 
                 st.error("Failed to generate PDF report. Check logs for details.") 
+
 
 
 
