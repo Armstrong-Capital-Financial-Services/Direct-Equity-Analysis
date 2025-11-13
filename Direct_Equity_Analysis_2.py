@@ -395,21 +395,21 @@ def create_enhanced_investment_report(equity_df):
         elements.append(Spacer(1, 20)) # Increased spacing
 
         #Comparision with Nifty Indices
-        nifty100_6m = float(equity_df.loc[0, 'Nifty100_6m_Return(%)'])
-        niftymid_6m = float(equity_df.loc[0, 'Nifty_midcap150_6m_Return(%)'])
-        nifty100_1y = float(equity_df.loc[0, 'Nifty100_1y_Return (%)'])
-        niftymid_1y = float(equity_df.loc[0, 'Nifty Midcap150_1y_Return (%)'])
-        nifty100_3m = float(equity_df.loc[0, 'Nifty100_3m_Return(%)'])
-        niftymid_3m = float(equity_df.loc[0, 'Nifty_midcap150_3m_Return(%)'])
-        nifty100_2y = float(equity_df.loc[0, 'Nifty100_2y_Return(%)'])
-        niftymid_2y = float(equity_df.loc[0, 'Nifty_midcap150_2y_Return(%)'])
-        nifty100_3y = float(equity_df.loc[0, 'Nifty100_3y_Return(%)'])
-        niftymid_3y =float( equity_df.loc[0, 'Nifty_midcap150_3y_Return(%)'])
-        niftysmallcap_6m = float(equity_df.loc[0, 'Nifty_Smallcap_6m_Return(%)'])
-        niftysmallcap_3m = float(equity_df.loc[0, 'Nifty_Smallcap_3m_Return(%)'])
-        niftysmallcap_1y = float(equity_df.loc[0, 'Nifty_Smallcap_1y_Return(%)'])
-        niftysmallcap_2y = float(equity_df.loc[0, 'Nifty_Smallcap_2y_Return(%)'])
-        niftysmallcap_3y = float(equity_df.loc[0, 'Nifty_Smallcap_3y_Return(%)'])
+        nifty100_6m = int(equity_df.loc[0, 'Nifty100_6m_Return(%)'])
+        niftymid_6m = int(equity_df.loc[0, 'Nifty_midcap150_6m_Return(%)'])
+        nifty100_1y = int(equity_df.loc[0, 'Nifty100_1y_Return (%)'])
+        niftymid_1y = int(equity_df.loc[0, 'Nifty Midcap150_1y_Return (%)'])
+        nifty100_3m = int(equity_df.loc[0, 'Nifty100_3m_Return(%)'])
+        niftymid_3m = int(equity_df.loc[0, 'Nifty_midcap150_3m_Return(%)'])
+        nifty100_2y = int(equity_df.loc[0, 'Nifty100_2y_Return(%)'])
+        niftymid_2y = int(equity_df.loc[0, 'Nifty_midcap150_2y_Return(%)'])
+        nifty100_3y = int(equity_df.loc[0, 'Nifty100_3y_Return(%)'])
+        niftymid_3y = int( equity_df.loc[0, 'Nifty_midcap150_3y_Return(%)'])
+        niftysmallcap_6m = int(equity_df.loc[0, 'Nifty_Smallcap_6m_Return(%)'])
+        niftysmallcap_3m = int(equity_df.loc[0, 'Nifty_Smallcap_3m_Return(%)'])
+        niftysmallcap_1y = int(equity_df.loc[0, 'Nifty_Smallcap_1y_Return(%)'])
+        niftysmallcap_2y = int(equity_df.loc[0, 'Nifty_Smallcap_2y_Return(%)'])
+        niftysmallcap_3y = int(equity_df.loc[0, 'Nifty_Smallcap_3y_Return(%)'])
 
         Portfolio_1y_Return = (portfolio_df['1Y Return (%)'] * portfolio_df['Weightage'].astype(float)/100).sum().round(2)
         Portfolio_3m_Return = (portfolio_df['3M Return (%)'] * portfolio_df['Weightage'].astype(float)/100).sum().round(2)
@@ -1015,6 +1015,7 @@ if uploaded_file is not None:
             else:
 
                 st.error("Failed to generate PDF report. Check logs for details.") 
+
 
 
 
