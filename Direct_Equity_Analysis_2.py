@@ -619,6 +619,40 @@ def create_enhanced_investment_report(equity_df):
         elements.append(portfolio_table)
         elements.append(Spacer(1, 24))
 
+                elements.append(portfolio_table)
+        elements.append(Spacer(1, 24))
+
+        # --- Add: Portfolio Stocks Returns table ---
+        returns_df = equity_df[['Stock Name', '3M Return (%)', '6M Return (%)', '1Y Return (%)']].copy()
+        # Ensure numeric and format as percentage strings
+        for col in ['3M Return (%)', '6M Return (%)', '1Y Return (%)']:
+            returns_df[col] = pd.to_numeric(returns_df[col], errors='coerce').fillna(0).round(2).map(lambda x: f"{x:.2f}%")
+
+        returns_header = ["Stock Name", "3M Return", "6M Return", "1Y Return"]
+        returns_data_rows = returns_df.values.tolist()
+        returns_table_data = [returns_header] + returns_data_rows
+
+        returns_table = Table(returns_table_data, colWidths=[2.8*inch, 1.2*inch, 1.2*inch, 1.2*inch])
+        returns_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#2C3E50')),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN', (1, 1), (-1, -1), 'CENTER'),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, 0), 10),
+            ('FONTSIZE', (0, 1), (-1, -1), 8),
+            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.HexColor('#ECF0F1'), colors.white]),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#D5D8DC')),
+            ('LEFTPADDING', (0, 0), (-1, -1), 6),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 6),
+            ('TOPPADDING', (0, 0), (-1, -1), 4),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+        ]))
+        elements.append(Paragraph("Portfolio Stocks Returns", subtitle_style))
+        elements.append(Spacer(1, 6))
+        elements.append(returns_table)
+        elements.append(Spacer(1, 18))
+
         # Add a note about the scoring system
         scoring_note = """
         <b>Note on Scoring Framework</b><br/><br/>
@@ -971,6 +1005,7 @@ if uploaded_file is not None:
             else:
 
                 st.error("Failed to generate PDF report. Check logs for details.") 
+
 
 
 
