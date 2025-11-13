@@ -228,445 +228,440 @@ def draw_footer(canvas, doc):
     canvas.restoreState()
 
 def create_enhanced_investment_report(equity_df):
-    """Create enhanced investment report with portfolio analysis, improved formatting."""
+    """Create enhanced investment report with portfolio analysis, improved formatting."""def draw_border(canvas, doc):
+    canvas.saveState()
+    canvas.setStrokeColor(colors.black)
+    canvas.setLineWidth(1.5) # Slightly thinner border
+    margin = 25 # Increased margin for better look
+    canvas.rect(margin, margin, doc.width + doc.leftMargin + doc.rightMargin - 2 * margin,
+                doc.height + doc.topMargin + doc.bottomMargin - 2 * margin)
+    canvas.restoreState()
 
-    def draw_border(canvas, doc):
-        canvas.saveState()
-        canvas.setStrokeColor(colors.black)
-        canvas.setLineWidth(1.5) # Slightly thinner border
-        margin = 25 # Increased margin for better look
-        canvas.rect(margin, margin, doc.width + doc.leftMargin + doc.rightMargin - 2 * margin,
-                    doc.height + doc.topMargin + doc.bottomMargin - 2 * margin)
-        canvas.restoreState()
-
-    try:
-        # Create temporary directory for charts and PDF
-        temp_dir = tempfile.mkdtemp()
-        filename = f"Enhanced_Investment_Report.pdf"
-        output_path = os.path.join(temp_dir, filename)
+try:
+    # Create temporary directory for charts and PDF
+    temp_dir = tempfile.mkdtemp()
+    filename = f"Enhanced_Investment_Report.pdf"
+    output_path = os.path.join(temp_dir, filename)
+    
+    doc = SimpleDocTemplate(
+        output_path, 
+        pagesize=letter, 
+        topMargin=0.75*inch, 
+        bottomMargin=0.75*inch,
+        leftMargin=0.75*inch,
+        rightMargin=0.75*inch
+    )
+    elements = []
+    styles = getSampleStyleSheet()
+    
+    # Custom styles with improved spacing and fonts
+    title_style = ParagraphStyle(
+        'Title',
+        parent=styles['h1'],
+        fontSize=24,
+        leading=28, # Line spacing
+        alignment=TA_CENTER,
+        spaceAfter=24, # More space after title
+        textColor=colors.darkblue,)
         
-        doc = SimpleDocTemplate(
-            output_path, 
-            pagesize=letter, 
-            topMargin=0.75*inch, 
-            bottomMargin=0.75*inch,
-            leftMargin=0.75*inch,
-            rightMargin=0.75*inch
-        )
-        elements = []
-        styles = getSampleStyleSheet()
-        
-        # Custom styles with improved spacing and fonts
-        title_style = ParagraphStyle(
-            'Title',
-            parent=styles['h1'],
-            fontSize=24,
-            leading=28, # Line spacing
-            alignment=TA_CENTER,
-            spaceAfter=24, # More space after title
-            textColor=colors.darkblue,)
-            
-        subtitle_style = ParagraphStyle(
-            'Subtitle',
-            parent=styles['h2'],
-            fontSize=16,
-            leading=18,
-            spaceBefore=18, 
-            spaceAfter=10, 
-            textColor=colors.darkgreen,
-        )
-        normal_style = ParagraphStyle(
-            'Normal',
-            parent=styles['Normal'],
-            fontSize=10,
-            leading=14, 
-            spaceAfter=6,
-        )
-        
-        # Specific style for portfolio analysis section heading
-        portfolio_section_style = ParagraphStyle(
-            'PortfolioSection',
-            parent=styles['h1'],
-            fontSize=20,
-            leading=24,
-            alignment=TA_CENTER,
-            spaceBefore=30, # More space before this major section
-            spaceAfter=18,
-            textColor=colors.darkred,
-        )
-        
-        key_metric_style = ParagraphStyle(
-            'KeyMetric',
-            parent=styles['Normal'],
-            fontSize=11,
-            textColor=colors.darkgreen,
-            leftIndent=30, # Increased indent for bullet points
-            spaceAfter=4,
-            bulletText='• ' # Add a proper bullet
-        )
+    subtitle_style = ParagraphStyle(
+        'Subtitle',
+        parent=styles['h2'],
+        fontSize=16,
+        leading=18,
+        spaceBefore=18, 
+        spaceAfter=10, 
+        textColor=colors.darkgreen,
+    )
+    normal_style = ParagraphStyle(
+        'Normal',
+        parent=styles['Normal'],
+        fontSize=10,
+        leading=14, 
+        spaceAfter=6,
+    )
+    
+    # Specific style for portfolio analysis section heading
+    portfolio_section_style = ParagraphStyle(
+        'PortfolioSection',
+        parent=styles['h1'],
+        fontSize=20,
+        leading=24,
+        alignment=TA_CENTER,
+        spaceBefore=30, # More space before this major section
+        spaceAfter=18,
+        textColor=colors.darkred,
+    )
+    
+    key_metric_style = ParagraphStyle(
+        'KeyMetric',
+        parent=styles['Normal'],
+        fontSize=11,
+        textColor=colors.darkgreen,
+        leftIndent=30, # Increased indent for bullet points
+        spaceAfter=4,
+        bulletText='• ' # Add a proper bullet
+    )
 
-        # --- Report Content ---
+    # --- Report Content ---
 
-        # Company Logo
-        logo_path = "Armstrong_logo.png"
-        if os.path.exists(logo_path):
-            logo = Image(logo_path, width=7.5 * inch, height=1 * inch)
-            logo.hAlign = 'CENTER' # Center the logo
-            elements.append(logo)
-            elements.append(Spacer(1, 24)) # More space after logo
-        else:
-            elements.append(Paragraph("Company Logo Missing (Place Armstrong_logo.png in the same directory)", normal_style))
-            elements.append(Spacer(1, 12))
-
-        # Report Header
-        report_title = f"Investment Portfolio Analysis"
-        elements.append(Paragraph(report_title, title_style))
+    # Company Logo
+    logo_path = "Armstrong_logo.png"
+    if os.path.exists(logo_path):
+        logo = Image(logo_path, width=7.5 * inch, height=1 * inch)
+        logo.hAlign = 'CENTER' # Center the logo
+        elements.append(logo)
+        elements.append(Spacer(1, 24)) # More space after logo
+    else:
+        elements.append(Paragraph("Company Logo Missing (Place Armstrong_logo.png in the same directory)", normal_style))
         elements.append(Spacer(1, 12))
 
-        # Name & Date in same row
-        name_text = f"Client Name: {client_name}"
+    # Report Header
+    report_title = f"Investment Portfolio Analysis"
+    elements.append(Paragraph(report_title, title_style))
+    elements.append(Spacer(1, 12))
 
-        date_text = datetime.now().strftime("%B %d, %Y")
+    # Name & Date in same row
+    name_text = f"Client Name: {client_name}"
 
-        data = [[name_text, date_text]]
-        table = Table(data, colWidths=[4*inch, 2.5*inch])  # Adjust column widths
-        table.setStyle(TableStyle([
-    ('ALIGN', (0, 0), (0, 0), 'LEFT'),
-    ('ALIGN', (1, 0), (1, 0), 'RIGHT'),
-    ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-    ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
-    ('FONTSIZE', (0, 0), (-1, -1), 10),
-    ('BOTTOMPADDING', (0, 0), (-1, -1), 6),]))
-        elements.append(table)
-        elements.append(Spacer(1, 12))
+    date_text = datetime.now().strftime("%B %d, %Y")
 
-        # --- PORTFOLIO ANALYSIS SECTION ---
-        
-        # Analyze portfolio data
-        portfolio_analysis = analyze_portfolio_data(equity_df)
+    data = [[name_text, date_text]]
+    table = Table(data, colWidths=[4*inch, 2.5*inch])  # Adjust column widths
+    table.setStyle(TableStyle([
+('ALIGN', (0, 0), (0, 0), 'LEFT'),
+('ALIGN', (1, 0), (1, 0), 'RIGHT'),
+('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+('FONTSIZE', (0, 0), (-1, -1), 10),
+('BOTTOMPADDING', (0, 0), (-1, -1), 6),]))
+    elements.append(table)
+    elements.append(Spacer(1, 12))
 
-        total_portfolio_value = equity_df['Weight_2'].sum()
-        
-        # Key Portfolio Metrics Summary
-        elements.append(Paragraph("Executive Summary", subtitle_style))
-        
-        metrics = [("Total Portfolio Value", format_currency(total_portfolio_value), "Current market value"),
-            ("Total Stocks", str(portfolio_analysis['total_stocks']), "Diversification base"),
-     ("Sectors Covered", str(portfolio_analysis['sectors']), "Sector diversification"),
-     ("Average PE Ratio", f"{portfolio_analysis['avg_pe']:.2f}", "Valuation level"),
-     ("Average Beta", f"{portfolio_analysis['avg_beta']:.2f}", "Market risk exposure"),
-     ("High ROE Stocks (>20%)", str(portfolio_analysis['high_roe_stocks']), "Quality companies")]
-        
-        metric_style = ParagraphStyle(name='Metric', fontSize=8, textColor=colors.grey, leading=10)
-        value_style = ParagraphStyle(name='Value', fontSize=14, textColor=colors.darkgreen, leading=16)
-        insight_style = ParagraphStyle(name='Insight', fontSize=7, textColor=colors.black, leading=9)
+    # --- PORTFOLIO ANALYSIS SECTION ---
+    
+    # Analyze portfolio data
+    portfolio_analysis = analyze_portfolio_data(equity_df)
 
-        # Build card-style tables 
-        cards_per_row = 3
-        card_width = 170
-        card_rows = []
-        card_row = []
+    total_portfolio_value = equity_df['Weight_2'].sum()
+    
+    # Key Portfolio Metrics Summary
+    elements.append(Paragraph("Executive Summary", subtitle_style))
+    
+    metrics = [("Total Portfolio Value", format_currency(total_portfolio_value), "Current market value"),
+        ("Total Stocks", str(portfolio_analysis['total_stocks']), "Diversification base"),
+ ("Sectors Covered", str(portfolio_analysis['sectors']), "Sector diversification"),
+ ("Average PE Ratio", f"{portfolio_analysis['avg_pe']:.2f}", "Valuation level"),
+ ("Average Beta", f"{portfolio_analysis['avg_beta']:.2f}", "Market risk exposure"),
+ ("High ROE Stocks (>20%)", str(portfolio_analysis['high_roe_stocks']), "Quality companies")]
+    
+    metric_style = ParagraphStyle(name='Metric', fontSize=8, textColor=colors.grey, leading=10)
+    value_style = ParagraphStyle(name='Value', fontSize=14, textColor=colors.darkgreen, leading=16)
+    insight_style = ParagraphStyle(name='Insight', fontSize=7, textColor=colors.black, leading=9)
 
-        for i, (metric, value, insight) in enumerate(metrics):
-           card = Table([  [Paragraph(metric, metric_style)], [Paragraph(value, value_style)],  [Paragraph(insight, insight_style)] ], colWidths=card_width)
+    # Build card-style tables 
+    cards_per_row = 3
+    card_width = 170
+    card_rows = []
+    card_row = []
 
-           card.setStyle(TableStyle([('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#F9FAFB')),
-           ('BOX', (0, 0), (-1, -1), 1, colors.HexColor('#D1D5DB')),      
-           ('LEFTPADDING', (0, 0), (-1, -1), 10),
-           ('RIGHTPADDING', (0, 0), (-1, -1), 10),
-           ('TOPPADDING', (0, 0), (-1, -1), 8),
-           ('BOTTOMPADDING', (0, 0), (-1, -1), 8)]))
+    for i, (metric, value, insight) in enumerate(metrics):
+       card = Table([  [Paragraph(metric, metric_style)], [Paragraph(value, value_style)],  [Paragraph(insight, insight_style)] ], colWidths=card_width)
 
-           card_row.append(card)
+       card.setStyle(TableStyle([('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#F9FAFB')),
+       ('BOX', (0, 0), (-1, -1), 1, colors.HexColor('#D1D5DB')),      
+       ('LEFTPADDING', (0, 0), (-1, -1), 10),
+       ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+       ('TOPPADDING', (0, 0), (-1, -1), 8),
+       ('BOTTOMPADDING', (0, 0), (-1, -1), 8)]))
 
-           if len(card_row) == cards_per_row:
-                card_rows.append(card_row)
-                card_row = []
+       card_row.append(card)
 
-        # Add leftover row if any
-        if card_row:
-          card_rows.append(card_row)
- 
-        # Add grid of cards to elements
-        for row in card_rows:
-             elements.append(Table([row], colWidths=[card_width]*len(row), hAlign='LEFT'))
-             elements.append(Spacer(1, 10))
-        elements.append(Spacer(1, 20)) # Increased spacing
+       if len(card_row) == cards_per_row:
+            card_rows.append(card_row)
+            card_row = []
 
-        #Comparision with Nifty Indices
-        nifty100_6m = equity_df.loc[0, 'Nifty100_6m_Return(%)']
-        niftymid_6m = equity_df.loc[0, 'Nifty_midcap150_6m_Return(%)']
-        nifty100_1y = equity_df.loc[0, 'Nifty100_1y_Return (%)']
-        niftymid_1y = equity_df.loc[0, 'Nifty Midcap150_1y_Return (%)'] 
-        nifty100_3m = equity_df.loc[0, 'Nifty100_3m_Return(%)']
-        niftymid_3m = equity_df.loc[0, 'Nifty_midcap150_3m_Return(%)']
-        nifty100_2y = equity_df.loc[0, 'Nifty100_2y_Return(%)']
-        niftymid_2y = equity_df.loc[0, 'Nifty_midcap150_2y_Return(%)']
-        nifty100_3y = equity_df.loc[0, 'Nifty100_3y_Return(%)']
-        niftymid_3y = equity_df.loc[0, 'Nifty_midcap150_3y_Return(%)']
-        niftysmallcap_6m = equity_df.loc[0, 'Nifty_Smallcap_6m_Return(%)']
-        niftysmallcap_3m = equity_df.loc[0, 'Nifty_Smallcap_3m_Return(%)']
-        niftysmallcap_1y = equity_df.loc[0, 'Nifty_Smallcap_1y_Return(%)']
-        niftysmallcap_2y = equity_df.loc[0, 'Nifty_Smallcap_2y_Return(%)']
-        niftysmallcap_3y = equity_df.loc[0, 'Nifty_Smallcap_3y_Return(%)']
+    # Add leftover row if any
+    if card_row:
+      card_rows.append(card_row)
 
-        Portfolio_1y_Return = (portfolio_df['1Y Return (%)'] * portfolio_df['Weightage'].astype(float)/100).sum().round(2)
-        Portfolio_3m_Return = (portfolio_df['3M Return (%)'] * portfolio_df['Weightage'].astype(float)/100).sum().round(2)
-        Portfolio_6m_Return = (portfolio_df['6M Return (%)'] * portfolio_df['Weightage'].astype(float) /100).sum().round(2)
-        Portfolio_2y_Annulized_Return = (portfolio_df['2Y Annualized Return (%)'] * portfolio_df['Weightage'].astype(float) / 100).sum().round(2)
-        Portfolio_3y_Annualized_Return= (portfolio_df['3Y Annualized Return (%)'] * portfolio_df['Weightage'].astype(float) / 100).sum().round(2)
-        benchmark_data = [ ["Index","3M","6M","1Y","2Y"],
-         ["Nifty 100",nifty100_3m,nifty100_6m,nifty100_1y, nifty100_2y],
-         ["Nifty Midcap 150",niftymid_3m,niftymid_6m, niftymid_1y, niftymid_2y],
-         ["Nifty Smallcap 250",niftysmallcap_3m,niftysmallcap_6m,niftysmallcap_1y,niftysmallcap_2y],
-         ['Portfolio',Portfolio_3m_Return,Portfolio_6m_Return,Portfolio_1y_Return,Portfolio_2y_Annulized_Return]]
+    # Add grid of cards to elements
+    for row in card_rows:
+         elements.append(Table([row], colWidths=[card_width]*len(row), hAlign='LEFT'))
+         elements.append(Spacer(1, 10))
+    elements.append(Spacer(1, 20)) # Increased spacing
 
-        benchmark_table = Table(benchmark_data, colWidths=[2.2*inch, 1*inch])
-        benchmark_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1F618D')),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('ALIGN', (1, 1), (-1, -1), 'CENTER'),
-        ('FONTSIZE', (0, 0), (-1, -1), 9),]))
+    #Comparision with Nifty Indices
+    nifty100_6m = equity_df.loc[0, 'Nifty100_6m_Return(%)']
+    niftymid_6m = equity_df.loc[0, 'Nifty_midcap150_6m_Return(%)']
+    nifty100_1y = equity_df.loc[0, 'Nifty100_1y_Return (%)']
+    niftymid_1y = equity_df.loc[0, 'Nifty Midcap150_1y_Return (%)'] 
+    nifty100_3m = equity_df.loc[0, 'Nifty100_3m_Return(%)']
+    niftymid_3m = equity_df.loc[0, 'Nifty_midcap150_3m_Return(%)']
+    nifty100_2y = equity_df.loc[0, 'Nifty100_2y_Return(%)']
+    niftymid_2y = equity_df.loc[0, 'Nifty_midcap150_2y_Return(%)']
+    nifty100_3y = equity_df.loc[0, 'Nifty100_3y_Return(%)']
+    niftymid_3y = equity_df.loc[0, 'Nifty_midcap150_3y_Return(%)']
+    niftysmallcap_6m = equity_df.loc[0, 'Nifty_Smallcap_6m_Return(%)']
+    niftysmallcap_3m = equity_df.loc[0, 'Nifty_Smallcap_3m_Return(%)']
+    niftysmallcap_1y = equity_df.loc[0, 'Nifty_Smallcap_1y_Return(%)']
+    niftysmallcap_2y = equity_df.loc[0, 'Nifty_Smallcap_2y_Return(%)']
+    niftysmallcap_3y = equity_df.loc[0, 'Nifty_Smallcap_3y_Return(%)']
 
-        elements.append(Paragraph("Performance Highlights", subtitle_style))
+    Portfolio_1y_Return = (portfolio_df['1Y Return (%)'] * portfolio_df['Weightage'].astype(float)/100).sum().round(2)
+    Portfolio_3m_Return = (portfolio_df['3M Return (%)'] * portfolio_df['Weightage'].astype(float)/100).sum().round(2)
+    Portfolio_6m_Return = (portfolio_df['6M Return (%)'] * portfolio_df['Weightage'].astype(float) /100).sum().round(2)
+    Portfolio_2y_Annulized_Return = (portfolio_df['2Y Annualized Return (%)'] * portfolio_df['Weightage'].astype(float) / 100).sum().round(2)
+    Portfolio_3y_Annualized_Return= (portfolio_df['3Y Annualized Return (%)'] * portfolio_df['Weightage'].astype(float) / 100).sum().round(2)
+    benchmark_data = [ ["Index","3M","6M","1Y","2Y"],
+     ["Nifty 100",nifty100_3m,nifty100_6m,nifty100_1y, nifty100_2y],
+     ["Nifty Midcap 150",niftymid_3m,niftymid_6m, niftymid_1y, niftymid_2y],
+     ["Nifty Smallcap 250",niftysmallcap_3m,niftysmallcap_6m,niftysmallcap_1y,niftysmallcap_2y],
+     ['Portfolio',Portfolio_3m_Return,Portfolio_6m_Return,Portfolio_1y_Return,Portfolio_2y_Annulized_Return]]
+
+    benchmark_table = Table(benchmark_data, colWidths=[2.2*inch, 1*inch])
+    benchmark_table.setStyle(TableStyle([
+    ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1F618D')),
+    ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+    ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+    ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+    ('ALIGN', (1, 1), (-1, -1), 'CENTER'),
+    ('FONTSIZE', (0, 0), (-1, -1), 9),]))
+
+    elements.append(Paragraph("Performance Highlights", subtitle_style))
+    elements.append(Spacer(1, 10))
+    elements.append(benchmark_table)
+    elements.append(Spacer(1, 20))
+
+    # Best and Worst Performers
+    if portfolio_analysis['best_performer'] is not None:
+        title_style = ParagraphStyle(name='Title', fontSize=10, textColor=colors.black, spaceAfter=4)
+        value_style = ParagraphStyle(name='Value', fontSize=10, textColor=colors.black)
+        highlight_best = ParagraphStyle(name='Best', fontSize=10, textColor=colors.HexColor('#145A32'))
+        highlight_worst = ParagraphStyle(name='Worst', fontSize=10, textColor=colors.HexColor('#922B21'))
+
+        # Best Performer Data
+        best = portfolio_analysis['best_performer']
+        best_row = [ Paragraph(" <b>Best Performing Stock</b>", highlight_best),Paragraph(best['Stock Name'], value_style),Paragraph(best['Industry Name'], value_style),
+        Paragraph(f"1Y Return: {best['1Y Return (%)']:.2f}%", highlight_best),Paragraph(f"PE: {best['PE TTM Price to Earnings']:.2f}", value_style)]
+        best_table = Table([best_row], colWidths=[1.8*inch, 1.2*inch, 1.5*inch, 1.4*inch, 1*inch]) 
+        best_table.setStyle(TableStyle([ ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#E8F8F5')),
+          ('BOX', (0, 0), (-1, -1), 0.75, colors.HexColor('#2ECC71')),
+          ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+          ('LEFTPADDING', (0, 0), (-1, -1), 6),
+          ('RIGHTPADDING', (0, 0), (-1, -1), 6), ('TOPPADDING', (0, 0), (-1, -1), 5), ('BOTTOMPADDING', (0, 0), (-1, -1), 5),]))
+        elements.append(best_table)
         elements.append(Spacer(1, 10))
-        elements.append(benchmark_table)
+
+        # Worst Performer Data
+        worst = portfolio_analysis['worst_performer']
+        worst_row = [
+Paragraph(" <b>Worst Performing Stock</b>", highlight_worst),
+Paragraph(worst['Stock Name'], value_style),
+Paragraph(worst['Industry Name'], value_style),
+Paragraph(f"1Y Return: {worst['1Y Return (%)']:.2f}%", highlight_worst),
+Paragraph(f"PE: {worst['PE TTM Price to Earnings']:.2f}", value_style)]
+        worst_table = Table([worst_row], colWidths=[1.8*inch, 1.2*inch, 1.5*inch, 1.4*inch, 1*inch])
+        worst_table.setStyle(TableStyle([
+('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#FDEDEC')),
+('BOX', (0, 0), (-1, -1), 0.75, colors.HexColor('#E74C3C')),
+('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+('LEFTPADDING', (0, 0), (-1, -1), 6),
+('RIGHTPADDING', (0, 0), (-1, -1), 6),
+('TOPPADDING', (0, 0), (-1, -1), 5),
+('BOTTOMPADDING', (0, 0), (-1, -1), 5)],))
+        elements.append(worst_table)
         elements.append(Spacer(1, 20))
 
-        # Best and Worst Performers
-        if portfolio_analysis['best_performer'] is not None:
-            title_style = ParagraphStyle(name='Title', fontSize=10, textColor=colors.black, spaceAfter=4)
-            value_style = ParagraphStyle(name='Value', fontSize=10, textColor=colors.black)
-            highlight_best = ParagraphStyle(name='Best', fontSize=10, textColor=colors.HexColor('#145A32'))
-            highlight_worst = ParagraphStyle(name='Worst', fontSize=10, textColor=colors.HexColor('#922B21'))
+    # Risk Analysis
+    elements.append(Paragraph("Risk Profile Analysis", subtitle_style))
+    elements.append(Spacer(1, 6))
+    risk_table_data = [ [
+    Paragraph("<b>Metric</b>", normal_style),
+    Paragraph("<b>Value</b>", normal_style),
+    Paragraph("<b>Insight</b>", normal_style),  ],
+    [
+    "High Risk Stocks (β > 1.2)",
+    f"{portfolio_analysis['high_risk_stocks']} stocks",
+    "Market-sensitive picks",  ],
+    [
+    "Low Risk Stocks (β < 0.8)",
+    f"{portfolio_analysis['low_risk_stocks']} stocks",
+    "Defensive positioning", ],
+    [
+    "Average Portfolio Beta",
+    f"{portfolio_analysis['avg_beta']:.2f}",
+    "Overall risk level",  ]]
 
-            # Best Performer Data
-            best = portfolio_analysis['best_performer']
-            best_row = [ Paragraph("🏆 <b>Best Performing Stock</b>", highlight_best),Paragraph(best['Stock Name'], value_style),Paragraph(best['Industry Name'], value_style),
-            Paragraph(f"1Y Return: {best['1Y Return (%)']:.2f}%", highlight_best),Paragraph(f"PE: {best['PE TTM Price to Earnings']:.2f}", value_style)]
-            best_table = Table([best_row], colWidths=[1.8*inch, 1.2*inch, 1.5*inch, 1.4*inch, 1*inch]) 
-            best_table.setStyle(TableStyle([ ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#E8F8F5')),
-              ('BOX', (0, 0), (-1, -1), 0.75, colors.HexColor('#2ECC71')),
-              ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-              ('LEFTPADDING', (0, 0), (-1, -1), 6),
-              ('RIGHTPADDING', (0, 0), (-1, -1), 6), ('TOPPADDING', (0, 0), (-1, -1), 5), ('BOTTOMPADDING', (0, 0), (-1, -1), 5),]))
-            elements.append(best_table)
-            elements.append(Spacer(1, 10))
+    risk_table = Table(risk_table_data, colWidths=[2.3*inch, 1.5*inch, 2.2*inch])
+    risk_table.setStyle(TableStyle([
+      ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#2E86C1')),
+      ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+      ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+      ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+      ('FONTSIZE', (0, 0), (-1, 0), 10),
+      ('FONTSIZE', (0, 1), (-1, -1), 9),
+      ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#F4F6F7')]),
+      ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#D5D8DC')),
+      ('LEFTPADDING', (0, 0), (-1, -1), 6),
+      ('RIGHTPADDING', (0, 0), (-1, -1), 6),
+      ('TOPPADDING', (0, 0), (-1, -1), 5),
+      ('BOTTOMPADDING', (0, 0), (-1, -1), 5),]))
 
-            # Worst Performer Data
-            worst = portfolio_analysis['worst_performer']
-            worst_row = [
-    Paragraph("📉 <b>Worst Performing Stock</b>", highlight_worst),
-    Paragraph(worst['Stock Name'], value_style),
-    Paragraph(worst['Industry Name'], value_style),
-    Paragraph(f"1Y Return: {worst['1Y Return (%)']:.2f}%", highlight_worst),
-    Paragraph(f"PE: {worst['PE TTM Price to Earnings']:.2f}", value_style)]
-            worst_table = Table([worst_row], colWidths=[1.8*inch, 1.2*inch, 1.5*inch, 1.4*inch, 1*inch])
-            worst_table.setStyle(TableStyle([
-    ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#FDEDEC')),
-    ('BOX', (0, 0), (-1, -1), 0.75, colors.HexColor('#E74C3C')),
-    ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-    ('LEFTPADDING', (0, 0), (-1, -1), 6),
-    ('RIGHTPADDING', (0, 0), (-1, -1), 6),
-    ('TOPPADDING', (0, 0), (-1, -1), 5),
-    ('BOTTOMPADDING', (0, 0), (-1, -1), 5)],))
-            elements.append(worst_table)
-            elements.append(Spacer(1, 20))
+    elements.append(risk_table)
+    elements.append(Spacer(1, 24))
 
-        # Risk Analysis
-        elements.append(Paragraph("Risk Profile Analysis", subtitle_style))
-        elements.append(Spacer(1, 6))
-        risk_table_data = [ [
-        Paragraph("<b>Metric</b>", normal_style),
-        Paragraph("<b>Value</b>", normal_style),
-        Paragraph("<b>Insight</b>", normal_style),  ],
-        [
-        "High Risk Stocks (β > 1.2)",
-        f"{portfolio_analysis['high_risk_stocks']} stocks",
-        "Market-sensitive picks",  ],
-        [
-        "Low Risk Stocks (β < 0.8)",
-        f"{portfolio_analysis['low_risk_stocks']} stocks",
-        "Defensive positioning", ],
-        [
-        "Average Portfolio Beta",
-        f"{portfolio_analysis['avg_beta']:.2f}",
-        "Overall risk level",  ]]
-
-        risk_table = Table(risk_table_data, colWidths=[2.3*inch, 1.5*inch, 2.2*inch])
-        risk_table.setStyle(TableStyle([
-          ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#2E86C1')),
-          ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-          ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-          ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-          ('FONTSIZE', (0, 0), (-1, 0), 10),
-          ('FONTSIZE', (0, 1), (-1, -1), 9),
-          ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#F4F6F7')]),
-          ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#D5D8DC')),
-          ('LEFTPADDING', (0, 0), (-1, -1), 6),
-          ('RIGHTPADDING', (0, 0), (-1, -1), 6),
-          ('TOPPADDING', (0, 0), (-1, -1), 5),
-          ('BOTTOMPADDING', (0, 0), (-1, -1), 5),]))
-
-        elements.append(risk_table)
-        elements.append(Spacer(1, 24))
-
-        # Create and add portfolio charts
-        try:
-            chart_paths = create_portfolio_charts(equity_df, temp_dir,portfolio_df,nifty100_data,niftymidcap_data,smallcap_df)
-            
-            # Sector Distribution Chart
-            elements.append(Paragraph("Portfolio Composition - Sector Distribution", subtitle_style))
-            if 'sector_pie' in chart_paths:
-                elements.append(Image(chart_paths['sector_pie'], width=6.5*inch, height=4.5*inch, hAlign='CENTER'))
-                elements.append(Spacer(1, 18))
-            
-            # Page break before more charts
-            elements.append(PageBreak())
-            
-            # Risk-Return Analysis
-            elements.append(Paragraph("Performance vs. Risk Analysis", subtitle_style))
-            if 'risk_return' in chart_paths:
-                elements.append(Image(chart_paths['risk_return'], width=6.5*inch, height=4*inch, hAlign='CENTER'))
-                elements.append(Spacer(1, 18))
-            
-            # Market Cap Distribution
-            elements.append(Paragraph("Market Capitalization Distribution", subtitle_style))
-            if 'market_cap' in chart_paths:
-                elements.append(Image(chart_paths['market_cap'], width=6.5*inch, height=4*inch, hAlign='CENTER'))
-                elements.append(Spacer(1, 18))
-
-            # ROE Distribution
-            elements.append(Paragraph("Return on Equity (ROE) Distribution", subtitle_style))
-            if 'roe_dist' in chart_paths:
-                elements.append(Image(chart_paths['roe_dist'], width=6.5*inch, height=4*inch, hAlign='CENTER'))
-                elements.append(Spacer(1, 18))
-
-
-            # High Retuns Low Weightage Stocks & Low Returns High Weightage Stocks
-            elements.append(Paragraph("High Returns, Low Weightage Stocks", subtitle_style))
-            high_return_thresh = portfolio_df['1Y Return (%)'].astype(float).median()
-            low_return_thresh = portfolio_df['1Y Return (%)'].astype(float).median()
-            high_weight_thresh = portfolio_df['Weightage'].astype(float).median()
-            low_weight_thresh = portfolio_df['Weightage'].astype(float).median()
-
-            high_return_low_weight = portfolio_df[(portfolio_df['1Y Return (%)'].astype(float) > high_return_thresh) &
-            (portfolio_df['Weightage'].astype(float) < low_weight_thresh) & (portfolio_df['1Y Return (%)'].astype(float) >= 1)   # filter out returns < 1%
-            ][['Stock Name', '1Y Return (%)', 'Weightage']]
-
-            low_return_high_weight = portfolio_df[(portfolio_df['1Y Return (%)'].astype(float) < low_return_thresh) &
-            (portfolio_df['Weightage'].astype(float) > high_weight_thresh)][['Stock Name', '1Y Return (%)', 'Weightage']]
-
-            if not high_return_low_weight.empty:
-                hr_lw_data = [["Stock Name", "1Y Return (%)", "Weightage"]] + high_return_low_weight.values.tolist()
-                hr_lw_table = Table(hr_lw_data, colWidths=[3.5*inch, 1.5*inch, 1.5*inch])
-                hr_lw_table.setStyle(TableStyle([ ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#27AE60')),
-                               ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-                               ('ALIGN', (1, 1), (-1, -1), 'CENTER'),
-                               ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                               ('FONTSIZE', (0, 0), (-1, 0), 10),
-                               ('FONTSIZE', (0, 1), (-1, -1), 9),
-                               ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#F4F6F7')]),
-                               ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#D5D8DC')), ]))
-                elements.append(hr_lw_table)
-                elements.append(Spacer(1, 18))
-
-                # Low Returns, High Weightage table
-                elements.append(Paragraph("Low Returns, High Weightage Stocks", subtitle_style))
-                if not low_return_high_weight.empty:
-                      lr_hw_data = [["Stock Name", "1Y Return (%)", "Weightage"]] + low_return_high_weight.values.tolist()
-                      lr_hw_table = Table(lr_hw_data, colWidths=[3.5*inch, 1.5*inch, 1.5*inch])
-                      lr_hw_table.setStyle(TableStyle([ ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#C0392B')),
-                      ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-                      ('ALIGN', (1, 1), (-1, -1), 'CENTER'),
-                      ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                      ('FONTSIZE', (0, 0), (-1, 0), 10),
-                      ('FONTSIZE', (0, 1), (-1, -1), 9),
-                      ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#F4F6F7')]),
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#D5D8DC')),]))
-                elements.append(lr_hw_table)
-                elements.append(Spacer(1, 18))
-
-         
-            
-        except Exception as e:
-            elements.append(Paragraph(f"Chart Generation Error: {e}", normal_style))
-            elements.append(Spacer(1, 12))
+    # Create and add portfolio charts
+    try:
+        chart_paths = create_portfolio_charts(equity_df, temp_dir,portfolio_df,nifty100_data,niftymidcap_data,smallcap_df)
         
-        # Sector-wise Analysis Table
-        elements.append(Paragraph("Detailed Portfolio Analysis", subtitle_style))
-        equity_df_short = equity_df[['Stock Name', 'Weightage', 'Weight_2', 'Score','Revised Score']].copy()
-        equity_df_short['Score'] = equity_df_short['Score'].round(2)
-        equity_df_short['Revised Score'] = equity_df_short['Revised Score'].round(2)
-        equity_df_short['Weightage'] = equity_df_short['Weightage'].round(2)
-        equity_df_short['Weight_2'] = equity_df_short['Weight_2'].round(2).apply(format_currency)
-        equity_df_short = equity_df_short.sort_values(by='Revised Score', ascending=False)
-        header = ['Stock Name', 'Weightage', 'Invested Amt', 'Score', 'Revised Score']
-        data_rows = equity_df_short.astype(str).values.tolist()
-        table_data = [header] + data_rows
-        portfolio_table = Table(table_data, colWidths=[2.8 * inch, 1.2 * inch, 1 * inch, 1 * inch])
-        portfolio_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#34495E')), # Dark blue header
-            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, 0), 10),
-            ('FONTSIZE', (0, 1), (-1, -1), 8),
-            ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
-            ('TOPPADDING', (0, 0), (-1, 0), 8),
-            ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#CCCCCC')),
-            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.HexColor('#ECF0F1'), colors.white]), # Light grey/white rows
-            ('LEFTPADDING', (0, 0), (-1, -1), 4),
-            ('RIGHTPADDING', (0, 0), (-1, -1), 4) ]))
-        elements.append(portfolio_table)
-        elements.append(Spacer(1, 24))
-
-        # Add a note about the scoring system
-        scoring_note = """
-        <b>Note on Scoring Framework</b><br/><br/>
-         The stock scores presented in this report are derived from a structured multi-factor framework that evaluates companies across four key dimensions: <b>Risk, Returns, Valuation, and Profitability & Growth</b>. 
-         The objective is to provide a balanced measure of financial strength and consistency.<br/><br/>
-
-        <b>Scoring Criteria</b><br/>
-         - <b>Risk</b>: Beta ≤ 1, Standard Deviation ≤ 20%, Debt-to-Capital ≤ 40%<br/>
-         - <b>Returns</b>: ROE ≥ 12%, ROA ≥ 6%, ROCE > 12%<br/>
-         - <b>Valuation</b>: PEG ≤ Sector PEG, PE ≤ Sector PE<br/>
-         - <b>Profitability & Growth</b>: Net Profit CAGR ≥ 12% (3 years), Net Profit Margin ≥ 10%<br/><br/>
-
-        <b>Interpretation</b><br/>
-         - A <b>higher score</b> indicates stronger fundamentals, with the company demonstrating consistent performance across multiple dimensions.<br/>
-         - A <b>lower score</b> highlights areas of relative weakness.<br/>"""
-
-        note_paragraph = Paragraph(scoring_note, normal_style)
-
-        note_table = Table([[note_paragraph]], colWidths=[450])  # adjust width as per your page
-
-        note_table.setStyle(TableStyle([('BACKGROUND', (0, 0), (-1, -1), colors.whitesmoke),   ('BOX', (0, 0), (-1, -1), 1, colors.grey), ('INNERPADDING', (0, 0), (-1, -1), 8),   ]))
-        elements.append(note_table)
-
-        # Build PDF with page border
-        doc.build( elements,
-       onFirstPage=lambda c, d: (draw_border(c, d), draw_footer(c, d)),
-       onLaterPages=lambda c, d: (draw_border(c, d), draw_footer(c, d)))
+        # Sector Distribution Chart
+        elements.append(Paragraph("Portfolio Composition - Sector Distribution", subtitle_style))
+        if 'sector_pie' in chart_paths:
+            elements.append(Image(chart_paths['sector_pie'], width=6.5*inch, height=4.5*inch, hAlign='CENTER'))
+            elements.append(Spacer(1, 18))
         
-        # Read the generated PDF into bytes
-        with open(output_path, "rb") as f:
-            pdf_bytes = f.read()
-
-        # Clean up the temporary directory
-        try:
-            shutil.rmtree(temp_dir)
-        except Exception as cleanup_e:
-            print(f"Error cleaning up temporary directory: {cleanup_e}")
+        # Page break before more charts
+        elements.append(PageBreak())
         
-        return pdf_bytes
+        # Risk-Return Analysis
+        elements.append(Paragraph("Performance vs. Risk Analysis", subtitle_style))
+        if 'risk_return' in chart_paths:
+            elements.append(Image(chart_paths['risk_return'], width=6.5*inch, height=4*inch, hAlign='CENTER'))
+            elements.append(Spacer(1, 18))
+        
+        # Market Cap Distribution
+        elements.append(Paragraph("Market Capitalization Distribution", subtitle_style))
+        if 'market_cap' in chart_paths:
+            elements.append(Image(chart_paths['market_cap'], width=6.5*inch, height=4*inch, hAlign='CENTER'))
+            elements.append(Spacer(1, 18))
+
+        # ROE Distribution
+        elements.append(Paragraph("Return on Equity (ROE) Distribution", subtitle_style))
+        if 'roe_dist' in chart_paths:
+            elements.append(Image(chart_paths['roe_dist'], width=6.5*inch, height=4*inch, hAlign='CENTER'))
+            elements.append(Spacer(1, 18))
+        # High Retuns Low Weightage Stocks & Low Returns High Weightage Stocks
+        elements.append(Paragraph("High Returns, Low Weightage Stocks", subtitle_style))
+        high_return_thresh = portfolio_df['1Y Return (%)'].astype(float).median()
+        low_return_thresh = portfolio_df['1Y Return (%)'].astype(float).median()
+        high_weight_thresh = portfolio_df['Weightage'].astype(float).median()
+        low_weight_thresh = portfolio_df['Weightage'].astype(float).median()
+
+        high_return_low_weight = portfolio_df[(portfolio_df['1Y Return (%)'].astype(float) > high_return_thresh) &
+        (portfolio_df['Weightage'].astype(float) < low_weight_thresh) & (portfolio_df['1Y Return (%)'].astype(float) >= 1)   # filter out returns < 1%
+        ][['Stock Name', '1Y Return (%)', 'Weightage']]
+
+        low_return_high_weight = portfolio_df[(portfolio_df['1Y Return (%)'].astype(float) < low_return_thresh) &
+        (portfolio_df['Weightage'].astype(float) > high_weight_thresh)][['Stock Name', '1Y Return (%)', 'Weightage']]
+
+        if not high_return_low_weight.empty:
+            hr_lw_data = [["Stock Name", "1Y Return (%)", "Weightage"]] + high_return_low_weight.values.tolist()
+            hr_lw_table = Table(hr_lw_data, colWidths=[3.5*inch, 1.5*inch, 1.5*inch])
+            hr_lw_table.setStyle(TableStyle([ ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#27AE60')),
+                           ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                           ('ALIGN', (1, 1), (-1, -1), 'CENTER'),
+                           ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                           ('FONTSIZE', (0, 0), (-1, 0), 10),
+                           ('FONTSIZE', (0, 1), (-1, -1), 9),
+                           ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#F4F6F7')]),
+                           ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#D5D8DC')), ]))
+            elements.append(hr_lw_table)
+            elements.append(Spacer(1, 18))
+
+            # Low Returns, High Weightage table
+            elements.append(Paragraph("Low Returns, High Weightage Stocks", subtitle_style))
+            if not low_return_high_weight.empty:
+                  lr_hw_data = [["Stock Name", "1Y Return (%)", "Weightage"]] + low_return_high_weight.values.tolist()
+                  lr_hw_table = Table(lr_hw_data, colWidths=[3.5*inch, 1.5*inch, 1.5*inch])
+                  lr_hw_table.setStyle(TableStyle([ ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#C0392B')),
+                  ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                  ('ALIGN', (1, 1), (-1, -1), 'CENTER'),
+                  ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                  ('FONTSIZE', (0, 0), (-1, 0), 10),
+                  ('FONTSIZE', (0, 1), (-1, -1), 9),
+                  ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#F4F6F7')]),
+    ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#D5D8DC')),]))
+            elements.append(lr_hw_table)
+            elements.append(Spacer(1, 18))
+
+     
+        
     except Exception as e:
-        st.error(f"Error generating PDF report: {e}")
-        return None
+        elements.append(Paragraph(f"Chart Generation Error: {e}", normal_style))
+        elements.append(Spacer(1, 12))
+    
+    # Sector-wise Analysis Table
+    elements.append(Paragraph("Detailed Portfolio Analysis", subtitle_style))
+    equity_df_short = equity_df[['Stock Name', 'Weightage', 'Weight_2', 'Score','Revised Score']].copy()
+    equity_df_short['Score'] = equity_df_short['Score'].round(2)
+    equity_df_short['Revised Score'] = equity_df_short['Revised Score'].round(2)
+    equity_df_short['Weightage'] = equity_df_short['Weightage'].round(2)
+    equity_df_short['Weight_2'] = equity_df_short['Weight_2'].round(2).apply(format_currency)
+    equity_df_short = equity_df_short.sort_values(by='Revised Score', ascending=False)
+    header = ['Stock Name', 'Weightage', 'Invested Amt', 'Score', 'Revised Score']
+    data_rows = equity_df_short.astype(str).values.tolist()
+    table_data = [header] + data_rows
+    portfolio_table = Table(table_data, colWidths=[2.8 * inch, 1.2 * inch, 1 * inch, 1 * inch])
+    portfolio_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#34495E')), # Dark blue header
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 10),
+        ('FONTSIZE', (0, 1), (-1, -1), 8),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
+        ('TOPPADDING', (0, 0), (-1, 0), 8),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#CCCCCC')),
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.HexColor('#ECF0F1'), colors.white]), # Light grey/white rows
+        ('LEFTPADDING', (0, 0), (-1, -1), 4),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 4) ]))
+    elements.append(portfolio_table)
+    elements.append(Spacer(1, 24))
 
+    # Add a note about the scoring system
+    scoring_note = """
+    <b>Note on Scoring Framework</b><br/><br/>
+     The stock scores presented in this report are derived from a structured multi-factor framework that evaluates companies across four key dimensions: <b>Risk, Returns, Valuation, and Profitability & Growth</b>. 
+     The objective is to provide a balanced measure of financial strength and consistency.<br/><br/>
+
+    <b>Scoring Criteria</b><br/>
+     - <b>Risk</b>: Beta ≤ 1, Standard Deviation ≤ 20%, Debt-to-Capital ≤ 40%<br/>
+     - <b>Returns</b>: ROE ≥ 12%, ROA ≥ 6%, ROCE > 12%<br/>
+     - <b>Valuation</b>: PEG ≤ Sector PEG, PE ≤ Sector PE<br/>
+     - <b>Profitability & Growth</b>: Net Profit CAGR ≥ 12% (3 years), Net Profit Margin ≥ 10%<br/><br/>
+
+    <b>Interpretation</b><br/>
+     - A <b>higher score</b> indicates stronger fundamentals, with the company demonstrating consistent performance across multiple dimensions.<br/>
+     - A <b>lower score</b> highlights areas of relative weakness.<br/>"""
+
+    note_paragraph = Paragraph(scoring_note, normal_style)
+
+    note_table = Table([[note_paragraph]], colWidths=[450])  # adjust width as per your page
+
+    note_table.setStyle(TableStyle([('BACKGROUND', (0, 0), (-1, -1), colors.whitesmoke),   ('BOX', (0, 0), (-1, -1), 1, colors.grey), ('INNERPADDING', (0, 0), (-1, -1), 8),   ]))
+    elements.append(note_table)
+
+    # Build PDF with page border
+    doc.build( elements,
+   onFirstPage=lambda c, d: (draw_border(c, d), draw_footer(c, d)),
+   onLaterPages=lambda c, d: (draw_border(c, d), draw_footer(c, d)))
+    
+    # Read the generated PDF into bytes
+    with open(output_path, "rb") as f:
+        pdf_bytes = f.read()
+
+    # Clean up the temporary directory
+    try:
+        shutil.rmtree(temp_dir)
+    except Exception as cleanup_e:
+        print(f"Error cleaning up temporary directory: {cleanup_e}")
+    
+    return pdf_bytes
+except Exception as e:
+    st.error(f"Error generating PDF report: {e}")
+    return None
 
 def fetch_mf_data_to_dataframe(url: str) -> pd.DataFrame:
     try:
@@ -973,6 +968,7 @@ if uploaded_file is not None:
             else:
 
                 st.error("Failed to generate PDF report. Check logs for details.") 
+
 
 
 
