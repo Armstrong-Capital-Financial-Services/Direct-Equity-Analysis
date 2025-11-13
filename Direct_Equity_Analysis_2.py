@@ -344,6 +344,8 @@ def create_enhanced_investment_report(equity_df):
         
         # Analyze portfolio data
         portfolio_analysis = analyze_portfolio_data(equity_df)
+
+        total_portfolio_value = equity_df['Weight_2'].sum()
         
         # Key Portfolio Metrics Summary
         elements.append(Paragraph("Executive Summary", subtitle_style))
@@ -1004,6 +1006,7 @@ if uploaded_file is not None:
             else:
 
                 st.error("Failed to generate PDF report. Check logs for details.") 
+
 
 
 
