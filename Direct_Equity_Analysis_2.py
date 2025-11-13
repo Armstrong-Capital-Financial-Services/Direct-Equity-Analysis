@@ -893,10 +893,6 @@ if uploaded_file is not None:
     portfolio_df['Nifty_Smallcap_3m_Return(%)'] = niftysmallcap_3m_return.astype(str)
     portfolio_df['Nifty_Smallcap_2y_Return(%)'] = niftysmallcap_2y_annualized_return.astype(str)
     portfolio_df['Nifty_Smallcap_3y_Return(%)'] = niftysmallcap_3y_annualized_return.astype(str)
-    portfolio_df['3M Return (%)'] = portfolio_df['3M Return (%)'].astype(str)
-    portfolio_df['6M Return (%)'] = portfolio_df['6M Return (%)'].astype(str)
-    portfolio_df['1Y Return (%)'] =  portfolio_df['1Y Return (%)'].astype(str)
-    portfolio_df['2Y Annualized Return (%)'] =  portfolio_df['2Y Annualized Return (%)'].astype(str)
 
     
     
@@ -1001,6 +997,7 @@ if uploaded_file is not None:
             else:
 
                 st.error("Failed to generate PDF report. Check logs for details.") 
+
 
 
 
