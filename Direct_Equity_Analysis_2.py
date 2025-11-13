@@ -605,7 +605,7 @@ def create_enhanced_investment_report(equity_df):
         header = ['Stock Name', 'Weightage (%)', 'Score', 'Revised Score', 'Invested Amt']
         data_rows = equity_df_short.astype(str).values.tolist()  # Formatting is already applied as strings
         table_data = [header] + data_rows
-        portfolio_table = Table(table_data, colWidths=[2.5 * inch, 1.0 * inch, 1.0 * inch, 0.8 * inch, 0.8 * inch, 1.2 * inch])
+        portfolio_table = Table(table_data, colWidths=[2.5 * inch, 1.0 * inch, 1.0 * inch, 0.8 * inch, 1.2 * inch, 1.5 * inch])
         portfolio_table.setStyle(TableStyle([
     ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#34495E')),  # Dark blue header
     ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
@@ -1006,6 +1006,7 @@ if uploaded_file is not None:
             else:
 
                 st.error("Failed to generate PDF report. Check logs for details.") 
+
 
 
 
