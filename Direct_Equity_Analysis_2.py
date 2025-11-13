@@ -417,12 +417,6 @@ def create_enhanced_investment_report(equity_df):
         Portfolio_2y_Annulized_Return = (portfolio_df['2Y Annualized Return (%)'] * portfolio_df['Weightage'].astype(float)/100).sum().round(2)
         Portfolio_3y_Annualized_Return= (portfolio_df['3Y Annualized Return (%)'] * portfolio_df['Weightage'].astype(float)/100).sum().round(2)
 
-        equiweighted_3m = ((nifty100_3m + niftymid_3m + niftysmallcap_3m) / 3.0).round(2)
-        equiweighted_6m = ((nifty100_6m + niftymid_6m + niftysmallcap_6m) / 3.0).round(2)
-        equiweighted_1y = ((nifty100_1y + niftymid_1y + niftysmallcap_1y) / 3.0).round(2)
-        equiweighted_2y = ((nifty100_2y + niftymid_2y + niftysmallcap_2y) / 3.0).round(2)
-        equiweighted_3y = ((nifty100_3y + niftymid_3y + niftysmallcap_3y) / 3.0).round(2)
-
         benchmark_data = [ ["Index","3M","6M","1Y","2Y","3Y"],
          ["Nifty 100",nifty100_3m,nifty100_6m,nifty100_1y, nifty100_2y, nifty100_3y],
          ["Nifty Midcap 150",niftymid_3m,niftymid_6m, niftymid_1y, niftymid_2y, niftymid_3y],
@@ -1013,6 +1007,7 @@ if uploaded_file is not None:
             else:
 
                 st.error("Failed to generate PDF report. Check logs for details.") 
+
 
 
 
