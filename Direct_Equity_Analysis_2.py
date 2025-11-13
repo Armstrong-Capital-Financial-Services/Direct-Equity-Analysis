@@ -624,30 +624,6 @@ def create_enhanced_investment_report(equity_df):
         elements.append(portfolio_table)
         elements.append(Spacer(1, 24))
 
-        # New Stock Performance Metrics Table
-        elements.append(Paragraph("Stock Performance Metrics", subtitle_style))
-        performance_df = equity_df[['Stock Name','1Y Return (%)']].copy()
-        perf_header = ['Stock Name', '1Y Return (%)']
-        perf_data_rows = performance_df.astype(str).values.tolist()
-        perf_table_data = [perf_header] + perf_data_rows
-        performance_table = Table(perf_table_data, colWidths=[2.5*inch, 1.2*inch])
-        performance_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#34495E')),
-            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, 0), 10),
-            ('FONTSIZE', (0, 1), (-1, -1), 8),
-            ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
-            ('TOPPADDING', (0, 0), (-1, 0), 8),
-            ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#CCCCCC')),
-            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.HexColor('#ECF0F1'), colors.white]),
-            ('LEFTPADDING', (0, 0), (-1, -1), 4),
-            ('RIGHTPADDING', (0, 0), (-1, -1), 4) ]))
-        elements.append(performance_table)
-        elements.append(Spacer(1, 12))
-
         # Add a note about the scoring system
         scoring_note = """
         <b>Note on Scoring Framework</b><br/><br/>
@@ -997,6 +973,7 @@ if uploaded_file is not None:
             else:
 
                 st.error("Failed to generate PDF report. Check logs for details.") 
+
 
 
 
