@@ -416,11 +416,20 @@ def create_enhanced_investment_report(equity_df):
         Portfolio_6m_Return = (portfolio_df['6M Return (%)'] * portfolio_df['Weightage'].astype(float) /100).sum().round(2)
         Portfolio_2y_Annulized_Return = (portfolio_df['2Y Annualized Return (%)'] * portfolio_df['Weightage'].astype(float)/100).sum().round(2)
         Portfolio_3y_Annualized_Return= (portfolio_df['3Y Annualized Return (%)'] * portfolio_df['Weightage'].astype(float)/100).sum().round(2)
+
+        equiweighted_3m = ((nifty100_3m + niftymid_3m + niftysmallcap_3m) / 3).round(2)
+        equiweighted_6m = ((nifty100_6m + niftymid_6m + niftysmallcap_6m) / 3).round(2)
+        equiweighted_1y = ((nifty100_1y + niftymid_1y + niftysmallcap_1y) / 3).round(2)
+        equiweighted_2y = ((nifty100_2y + niftymid_2y + niftysmallcap_2y) / 3).round(2)
+        equiweighted_3y = ((nifty100_3y + niftymid_3y + niftysmallcap_3y) / 3).round(2)
+
         benchmark_data = [ ["Index","3M","6M","1Y","2Y","3Y"],
          ["Nifty 100",nifty100_3m,nifty100_6m,nifty100_1y, nifty100_2y, nifty100_3y],
          ["Nifty Midcap 150",niftymid_3m,niftymid_6m, niftymid_1y, niftymid_2y, niftymid_3y],
          ["Nifty Smallcap 250",niftysmallcap_3m,niftysmallcap_6m,niftysmallcap_1y,niftysmallcap_2y,niftysmallcap_3y],
          ['Portfolio',Portfolio_3m_Return,Portfolio_6m_Return,Portfolio_1y_Return,Portfolio_2y_Annulized_Return,Portfolio_3y_Annualized_Return]]
+
+        benchmark_data.append(['Equiweighted Index', equiweighted_3m, equiweighted_6m, equiweighted_1y, equiweighted_2y, equiweighted_3y])
 
         benchmark_table = Table(benchmark_data, colWidths=[2.2*inch, 1*inch])
         benchmark_table.setStyle(TableStyle([
@@ -1006,6 +1015,7 @@ if uploaded_file is not None:
             else:
 
                 st.error("Failed to generate PDF report. Check logs for details.") 
+
 
 
 
