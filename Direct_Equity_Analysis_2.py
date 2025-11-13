@@ -395,21 +395,21 @@ def create_enhanced_investment_report(equity_df):
         elements.append(Spacer(1, 20)) # Increased spacing
 
         #Comparision with Nifty Indices
-        nifty100_6m = int(equity_df.loc[0, 'Nifty100_6m_Return(%)'])
-        niftymid_6m = int(equity_df.loc[0, 'Nifty_midcap150_6m_Return(%)'])
-        nifty100_1y = int(equity_df.loc[0, 'Nifty100_1y_Return (%)'])
-        niftymid_1y = int(equity_df.loc[0, 'Nifty Midcap150_1y_Return (%)'])
-        nifty100_3m = int(equity_df.loc[0, 'Nifty100_3m_Return(%)'])
-        niftymid_3m = int(equity_df.loc[0, 'Nifty_midcap150_3m_Return(%)'])
-        nifty100_2y = int(equity_df.loc[0, 'Nifty100_2y_Return(%)'])
-        niftymid_2y = int(equity_df.loc[0, 'Nifty_midcap150_2y_Return(%)'])
-        nifty100_3y = int(equity_df.loc[0, 'Nifty100_3y_Return(%)'])
-        niftymid_3y = int( equity_df.loc[0, 'Nifty_midcap150_3y_Return(%)'])
-        niftysmallcap_6m = int(equity_df.loc[0, 'Nifty_Smallcap_6m_Return(%)'])
-        niftysmallcap_3m = int(equity_df.loc[0, 'Nifty_Smallcap_3m_Return(%)'])
-        niftysmallcap_1y = int(equity_df.loc[0, 'Nifty_Smallcap_1y_Return(%)'])
-        niftysmallcap_2y = int(equity_df.loc[0, 'Nifty_Smallcap_2y_Return(%)'])
-        niftysmallcap_3y = int(equity_df.loc[0, 'Nifty_Smallcap_3y_Return(%)'])
+        nifty100_6m = (equity_df.loc[0, 'Nifty100_6m_Return(%)'])
+        niftymid_6m = (equity_df.loc[0, 'Nifty_midcap150_6m_Return(%)'])
+        nifty100_1y = (equity_df.loc[0, 'Nifty100_1y_Return (%)'])
+        niftymid_1y = (equity_df.loc[0, 'Nifty Midcap150_1y_Return (%)'])
+        nifty100_3m = (equity_df.loc[0, 'Nifty100_3m_Return(%)'])
+        niftymid_3m = (equity_df.loc[0, 'Nifty_midcap150_3m_Return(%)'])
+        nifty100_2y = (equity_df.loc[0, 'Nifty100_2y_Return(%)'])
+        niftymid_2y = (equity_df.loc[0, 'Nifty_midcap150_2y_Return(%)'])
+        nifty100_3y = (equity_df.loc[0, 'Nifty100_3y_Return(%)'])
+        niftymid_3y = ( equity_df.loc[0, 'Nifty_midcap150_3y_Return(%)'])
+        niftysmallcap_6m = (equity_df.loc[0, 'Nifty_Smallcap_6m_Return(%)'])
+        niftysmallcap_3m = (equity_df.loc[0, 'Nifty_Smallcap_3m_Return(%)'])
+        niftysmallcap_1y = (equity_df.loc[0, 'Nifty_Smallcap_1y_Return(%)'])
+        niftysmallcap_2y = (equity_df.loc[0, 'Nifty_Smallcap_2y_Return(%)'])
+        niftysmallcap_3y = (equity_df.loc[0, 'Nifty_Smallcap_3y_Return(%)'])
 
         Portfolio_1y_Return = (portfolio_df['1Y Return (%)'] * portfolio_df['Weightage'].astype(float)/100).sum().round(2)
         Portfolio_3m_Return = (portfolio_df['3M Return (%)'] * portfolio_df['Weightage'].astype(float)/100).sum().round(2)
@@ -428,8 +428,6 @@ def create_enhanced_investment_report(equity_df):
          ["Nifty Midcap 150",niftymid_3m,niftymid_6m, niftymid_1y, niftymid_2y, niftymid_3y],
          ["Nifty Smallcap 250",niftysmallcap_3m,niftysmallcap_6m,niftysmallcap_1y,niftysmallcap_2y,niftysmallcap_3y],
          ['Portfolio',Portfolio_3m_Return,Portfolio_6m_Return,Portfolio_1y_Return,Portfolio_2y_Annulized_Return,Portfolio_3y_Annualized_Return]]
-
-        benchmark_data.append(['Equiweighted Index', equiweighted_3m, equiweighted_6m, equiweighted_1y, equiweighted_2y, equiweighted_3y])
 
         benchmark_table = Table(benchmark_data, colWidths=[2.2*inch, 1*inch])
         benchmark_table.setStyle(TableStyle([
@@ -1015,6 +1013,7 @@ if uploaded_file is not None:
             else:
 
                 st.error("Failed to generate PDF report. Check logs for details.") 
+
 
 
 
