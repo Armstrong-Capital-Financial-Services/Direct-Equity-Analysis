@@ -624,10 +624,6 @@ def create_enhanced_investment_report(equity_df):
 
         # --- Add: Portfolio Stocks Returns table ---
         returns_df = equity_df[['Stock Name', '3M Return (%)', '6M Return (%)', '1Y Return (%)']].copy()
-        # Ensure numeric and format as percentage strings
-        for col in ['3M Return (%)', '6M Return (%)', '1Y Return (%)']:
-            returns_df[col] = pd.to_numeric(returns_df[col], errors='coerce').fillna(0).round(2).map(lambda x: f"{x:.2f}%")
-
         returns_header = ["Stock Name", "3M Return", "6M Return", "1Y Return"]
         returns_data_rows = returns_df.values.tolist()
         returns_table_data = [returns_header] + returns_data_rows
@@ -1005,6 +1001,7 @@ if uploaded_file is not None:
             else:
 
                 st.error("Failed to generate PDF report. Check logs for details.") 
+
 
 
 
