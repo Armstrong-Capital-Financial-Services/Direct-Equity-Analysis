@@ -601,7 +601,7 @@ def create_enhanced_investment_report(equity_df):
         equity_df_short['Revised Score'] = equity_df_short['Revised Score'].round(2)
         equity_df_short['Weight_2'] = equity_df_short['Weight_2'].round(2).apply(format_currency)  # Round first, then apply row-wise formatting
         equity_df_short = equity_df_short.sort_values(by='Revised Score', ascending=False)
-        header = ['Stock Name', 'Weightage (%)', 'Score', 'Revised Score', 'Invested Amt']
+        header = ['Stock Name', 'Weightage (%)', 'Score', 'Rev Score', 'Invested Amt']
         data_rows = equity_df_short.astype(str).values.tolist()  # Formatting is already applied as strings
         table_data = [header] + data_rows
         portfolio_table = Table(table_data, colWidths=[2.5 * inch, 1.0 * inch, 1.0 * inch, 0.8 * inch, 1.2 * inch, 1.5 * inch])
@@ -1001,6 +1001,7 @@ if uploaded_file is not None:
             else:
 
                 st.error("Failed to generate PDF report. Check logs for details.") 
+
 
 
 
